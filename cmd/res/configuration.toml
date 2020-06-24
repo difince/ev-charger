@@ -1,0 +1,71 @@
+[Writable]
+LogLevel = 'DEBUG'
+
+[Service]
+BootTimeout = 30000
+CheckInterval = '10s'
+ClientMonitor = 15000
+Host = 'localhost'
+Port = 45678
+Protocol = 'http'
+StartupMsg = 'ev-charger device service started'
+Timeout = 5000
+ConnectRetries = 20
+Labels = []
+EnableAsyncReadings = true
+AsyncBufferSize = 16
+
+[Registry]
+Host = 'localhost'
+Port = 8500
+Type = 'consul'
+
+[Clients]
+  [Clients.Data]
+  Protocol = 'http'
+  Host = 'localhost'
+  Port = 48080
+
+  [Clients.Metadata]
+  Protocol = 'http'
+  Host = 'localhost'
+  Port = 48081
+
+  [Clients.Logging]
+  Protocol = 'http'
+  Host = 'localhost'
+  Port = 48061
+
+[Device]
+  DataTransform = true
+  InitCmd = ''
+  InitCmdArgs = ''
+  MaxCmdOps = 128
+  MaxCmdValueLen = 256
+  RemoveCmd = ''
+  RemoveCmdArgs = ''
+  ProfilesDir = '/home/difince/git/ev-charger/cmd/res'
+  UpdateLastConnected = false
+  [Device.Discovery]
+    Enabled = false
+    Interval = '30s'
+
+# Remote and file logging disabled so only stdout logging is used
+[Logging]
+EnableRemote = false
+File = ''
+
+# Pre-define Devices
+[[DeviceList]]
+  Name = '238421' #Id
+  Profile = 'Hilltop-G-GW'
+  Description = 'Station Group Hilltop G GW'
+  Labels = [ 'industrial' ]
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.other]
+      Address = 'https://webservices.chargepoint.com/webservices/chargepoint/services/5.0'
+      Port = '300'
+#  [[DeviceList.AutoEvents]]
+#    Frequency = '2s'
+#    OnChange = false
+#    Resource = 'GetLoad'

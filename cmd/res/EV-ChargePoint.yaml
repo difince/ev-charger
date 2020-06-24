@@ -1,0 +1,82 @@
+name: "Hilltop-G-GW"
+manufacturer: "Camus Energy / VMWare."
+model: "CT4010-HD"
+labels:
+  - "soap"
+description: "Example of EV ChargerPoint"
+
+deviceResources:
+  -
+    name: "Load"
+    description: "Current load"
+    properties:
+      value:
+        { type: "Float64", readWrite: "RW"}
+      units:
+        { type: "String", readWrite: "R", defaultValue: "Wats"}
+  -
+    name: "AllowedLoad"
+    description: "Allowed load per station/port"
+    properties:
+      value:
+        { type: "String", readWrite: "RW"}
+      units:
+        { type: "String", readWrite: "R", defaultValue: "Wats"}
+  -
+    name: "PercentShed"
+    description: ""
+    properties:
+      value:
+        { type: "Int32", readWrite: "RW"}
+  -
+    name: "StationGroupId"
+    description: "StationGroupId"
+    properties:
+      value:
+        { type: "Int32", readWrite: "R"}
+  -
+    name: "GroupName"
+    description: "Name of the Group"
+    properties:
+      value:
+        { type: "String", readWrite: "R"}
+  -
+    name: "NumStations"
+    description: "Number of stations in the group"
+    properties:
+      value:
+        { type: "String", readWrite: "R"}
+deviceCommands:
+-
+  name: "GetLoad"
+  get:
+    - { index: "1", operation: "get", deviceResource: "Load" }
+    - { index: "2", operation: "get", deviceResource: "GroupName" }
+    - { index: "3", operation: "get", deviceResource: "NumStations" }
+-
+  name: "ShedByAllowedLoad"
+  set:
+    - { operation: "set", deviceResource: "AllowedLoad" }
+-
+  name: "ShedByPercentShed"
+  set:
+    - { operation: "set", deviceResource: "PercentShed" }
+-
+  name: "ClearShed"
+  set:
+    - { operation: "set", deviceResource: "StationGroupId"}
+
+coreCommands:
+  -
+    name: "GetLoad"
+    get:
+      path: "/api/v1/device/{deviceId}/Load"
+      responses:
+        -
+          code: "200"
+          description: ""
+          expectedValues: []
+        -
+          code: "503"
+          description: "service unavailable"
+          expectedValues: []
