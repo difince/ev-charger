@@ -28,6 +28,6 @@ const (
 )
 
 func main() {
-	sd := driver.EVCharger{}
-	startup.Bootstrap(serviceName, device.Version, &sd)
+	sd := driver.NewProtocolDriver()
+	startup.Bootstrap(serviceName, device.Version, sd)
 }

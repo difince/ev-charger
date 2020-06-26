@@ -53,7 +53,7 @@ Type = 'consul'
 # Remote and file logging disabled so only stdout logging is used
 [Logging]
 EnableRemote = false
-File = ''
+File = './ev-charger-device-service.log'
 
 # Pre-define Devices
 [[DeviceList]]
@@ -62,10 +62,14 @@ File = ''
   Description = 'Station Group Hilltop G GW'
   Labels = [ 'industrial' ]
   [DeviceList.Protocols]
-    [DeviceList.Protocols.other]
+    [DeviceList.Protocols.HTTP]
       Address = 'https://webservices.chargepoint.com/webservices/chargepoint/services/5.0'
-      Port = '300'
+#      Port = '300'
 #  [[DeviceList.AutoEvents]]
 #    Frequency = '2s'
 #    OnChange = false
 #    Resource = 'GetLoad'
+
+[Driver]
+ApiKey = '6039c48f63f27cf8df3ce60b278db40d5dfa80354bfd41576697909'
+ApiPassword = 'acebe3cae177da61866eb04ba7cbc4ab'
