@@ -12,7 +12,6 @@ import (
 	evModels "github.com/CamusEnergy/kinney/controller/chargepoint/api/schema"
 )
 
-// EVChargeClient manages the state required to issue ONVIF requests to a camera
 type EVChargeClient struct {
 	address      string
 	key          string
