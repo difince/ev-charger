@@ -13,26 +13,16 @@ import (
 )
 
 type EVChargeClient struct {
-	address      string
-	key          string
-	password     string
-	//evClient     *evClient.Client
-	writer io.Writer
+	client EVChargePointClient
 }
 
 // NewEVChargeClient returns an EVChargeClient for a single evCharger
 func NewEVChargeClient(addr string, key string, password string, writer io.Writer/*logger.LoggingClient*/) *EVChargeClient {
-	c := EVChargeClient{
-		address:  addr,
-		key:      key,
-		password: password,
-		writer:   writer,
-	}
-	//c := evClient.NewClient(c.address,c.key, c.password, s.httpLogWriter)
+	c := EVChargeClient{client: evClient.NewClient(addr,key, password, writer)}
 	return &c
 }
 
-// getStationGroupLoad makes an evClient GetLoadRequest request to the evCharger
+// getStationGroupLoad makes an client GetLoadRequest request to the evCharger
 func (c *EVChargeClient) getStationGroupLoad(device string) (*evModels.GetLoadResponse, error) {
 	sgId, err := strconv.ParseInt(device, 10, 32)
 	if err != nil {
@@ -40,8 +30,7 @@ func (c *EVChargeClient) getStationGroupLoad(device string) (*evModels.GetLoadRe
 	}
 	request := &evModels.GetLoadRequest{StationGroupID: int32(sgId)}
 
-	client := evClient.NewClient(c.address, c.key, c.password, c.writer)
-	resp, err := client.GetLoad(context.Background(), request)
+	resp, err := c.client.GetLoad(context.Background(), request)
 	if err != nil {
 		return nil, fmt.Errorf("error occured %s", err)
 	}
@@ -53,12 +42,10 @@ func (c *EVChargeClient) getStationGroupLoad(device string) (*evModels.GetLoadRe
 	return resp, nil
 }
 
-
 // ClearShed
 func (c *EVChargeClient) ClearShed(sgId int32) error {
 	request := &evModels.ClearShedStateRequest{StationGroupID: &sgId}
-	client := evClient.NewClient(c.address, c.key, c.password, c.writer)
-	resp, err := client.ClearShedState(context.Background(), request)
+	resp, err := c.client.ClearShedState(context.Background(), request)
 	if err != nil {
 		return fmt.Errorf("error occured %s", err)
 	}
@@ -76,8 +63,7 @@ func (c *EVChargeClient) ShedLoadByAllowedLoad(deviceName string, allowedLoad st
 		return err
 	}
 	request := &evModels.ShedLoadRequest{StationGroupID: int32(sgId), StationGroupAllowedLoadKW: allowedLoad}
-	client := evClient.NewClient(c.address, c.key, c.password, c.writer)
-	resp, err := client.ShedLoad(context.Background(), request)
+	resp, err := c.client.ShedLoad(context.Background(), request)
 	if err != nil {
 		return fmt.Errorf("error occured %s", err)
 	}
@@ -90,19 +76,19 @@ func (c *EVChargeClient) ShedLoadByAllowedLoad(deviceName string, allowedLoad st
 
 // ShedLoadByAllowedLoad
 func (c *EVChargeClient) ShedLoadByPercentage(deviceName string, percentage int32) error {
-	sgId, err := strconv.ParseInt(deviceName, 10, 32)
-	if err != nil {
-		return err
-	}
-	request := &evModels.ShedLoadRequest{StationGroupID: int32(sgId), StationPercentShed: &percentage}
-	client := evClient.NewClient(c.address, c.key, c.password, c.writer)
-	resp, err := client.ShedLoad(context.Background(), request)
-	if err != nil {
-		return fmt.Errorf("error occured %s", err)
-	}
-	if resp.Success != 1 {
-		log.Printf("Code: %s, Msg: %s ", resp.ResponseCode, resp.ResponseText)
-		return errors.New(resp.ResponseText)
-	}
+	//sgId, err := strconv.ParseInt(deviceName, 10, 32)
+	//if err != nil {
+	//	return err
+	//}
+	//request := &evModels.ShedLoadRequest{StationGroupID: int32(sgId), StationGroupPercentShed: &percentage}
+	//client := client.NewClient(c.address, c.key, c.password, c.writer)
+	//resp, err := client.ShedLoad(context.Background(), request)
+	//if err != nil {
+	//	return fmt.Errorf("error occured %s", err)
+	//}
+	//if resp.Success != 1 {
+	//	log.Printf("Code: %s, Msg: %s ", resp.ResponseCode, resp.ResponseText)
+	//	return errors.New(resp.ResponseText)
+	//}
 	return nil
 }
